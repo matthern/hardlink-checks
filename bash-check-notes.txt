@@ -1,0 +1,29 @@
+find /datadir/completed/ -type f -exec stat {} \; | grep -B 2 'Links: 1' > link_files.txt; less link_files.txt | grep File | grep -v srt | grep -v txt | grep -v nfo | grep -v flac | grep -v exe > file-only.txt
+
+sed 's/File: //g' file-only.txt > file-only2.txt
+
+sed 's/^[[:space:]]*\(.*\)/"\1"/' input_file > output_file
+
+
+
+#!/bin/bash
+  
+# Filename containing the list of filenames
+file_list="file6.txt"
+
+# Check if the file exists
+if [ ! -f "$file_list" ]; then
+    echo "File $file_list not found."
+    exit 1
+fi
+
+# Iterate over each line in the file
+while IFS= read -r filename; do
+    # Run your command on the filename
+    eval "ls $filename"
+done < "$file_list"
+
+
+find /datadir/completed/ -type f -exec stat {} \; | grep -B 2 'Links: 1' | grep File | grep -v -e 'srt' -e 'txt' -e 'nfo' -e 'flac' -e 'exe' | sed -e 's/File: //' -e 's/^[[:space:]]*//' -e 's/^\(.*\)$/"\1"/' > file-only3.txt
+
+
